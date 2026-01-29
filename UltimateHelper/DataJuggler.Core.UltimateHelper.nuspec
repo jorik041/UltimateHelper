@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>1.9.1</version>
+    <version>1.9.4</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
@@ -12,6 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
+		Version 1.9.4 - Copied some code from the .NET 10 version to make a special version of Excelerate.
 		Version 1.9.0 - EnvironmentVariableHelper was updated to have a parameter for User or Machine 
 		Version 1.7.0 - WordParser has been eliminated. Use TextHelper for all methods that WordParser useds to implement.
 		Version 1.6.0 - This project was updated to 4.8 .NET Framework

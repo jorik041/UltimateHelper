@@ -2,12 +2,11 @@
 
 #region using statements
 
+using DataJuggler.Core.UltimateHelper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 #endregion
 
@@ -38,7 +37,7 @@ namespace DataJuggler.Core.UltimateHelper
                 // Set the return value to the sourceFiles so far
                 files = sourceFiles;
             }
-            else 
+            else
             {
                 // Create the return value
                 files = new List<string>();
@@ -48,20 +47,71 @@ namespace DataJuggler.Core.UltimateHelper
 
             // If the filesToAdd collection exists and has one or more items
             if (ListHelper.HasOneOrMoreItems(filesToAdd))
-            {   
+            {
                 // Iterate the collection of string objects
                 foreach (string file in filesToAdd)
-                {  
+                {
                     // Add this file
                     files.Add(file);
                 }
             }
-                
+
             // return value
             return files;
         }
         #endregion
-            
+
+        #region CreateFileNameWithPartialGuid(string sourceFileName, int numberChars, bool addExtension = true, bool fileNameOnly = false)
+        /// <summary>
+        /// This method appends a partial Guid to a filename
+        /// </summary>
+        public static string CreateFileNameWithPartialGuid(string sourceFileName, int numberChars, bool addExtension = true, bool fileNameOnly = false)
+        {
+            // initial value
+            string newPath = "";
+
+            if (TextHelper.Exists(sourceFileName))
+            {
+                // Get a fileInfo of the oldPath
+                FileInfo fileInfo = new FileInfo(sourceFileName);
+
+                // get the name
+                string name = GetFileNameWithoutExtension(sourceFileName);
+
+                // Get the directory
+                DirectoryInfo directory = fileInfo.Directory;
+
+                // get the directoryFullname
+                string fullPath = directory.FullName;
+
+                // newFileName
+                string newFileName = name + "." + Guid.NewGuid().ToString().Substring(0, numberChars);
+
+                // if addExtension is true
+                if (addExtension)
+                {
+                    // put the extension back
+                    newFileName += fileInfo.Extension;
+                }
+
+                // if fileNameOnly
+                if (fileNameOnly)
+                {
+                    // set the return value to the newFileName
+                    newPath = newFileName;
+                }
+                else
+                {
+                    // Get the new full Path
+                    newPath = Path.Combine(fullPath, newFileName);
+                }
+            }
+
+            // return value
+            return newPath;
+        }
+        #endregion
+
         #region Exists(string filePath)
         /// <summary>
         /// method returns the
@@ -87,6 +137,35 @@ namespace DataJuggler.Core.UltimateHelper
         }
         #endregion
 
+        #region GetFileNameWithoutExtension(string fullName)
+        /// <summary>
+        /// This method returns the File Name Without Extension
+        /// </summary>
+        public static string GetFileNameWithoutExtension(string fullName)
+        {
+            // initial value
+            string fileNameWithoutExtension = "";
+
+            // Create a fileInfo object
+            FileInfo fileInfo = new FileInfo(fullName);
+
+            // if the extension exists
+            if (TextHelper.Exists(fileInfo.Extension))
+            {
+                // Remove the extension
+                fileNameWithoutExtension = fileInfo.Name.Replace(fileInfo.Extension, "");
+            }
+            else
+            {
+                // There is not an extension
+                fileNameWithoutExtension = fileInfo.Name;
+            }
+
+            // return value
+            return fileNameWithoutExtension;
+        }
+        #endregion
+
         #region GetFileNameWithoutExtensionEx(string fullName, ref string extension)
         /// <summary>
         /// This method returns the File Name Without Extension
@@ -96,131 +175,26 @@ namespace DataJuggler.Core.UltimateHelper
             // initial value
             string fileNameWithoutExtension = "";
 
-            // local
-            int index = -1;
+            // Create a fileInfo object
+            FileInfo fileInfo = new FileInfo(fullName);
 
-            // If the fullName string exists
-            if (TextHelper.Exists(fullName))
+            // if the extension exists
+            if (TextHelper.Exists(fileInfo.Extension))
             {
-                // Create a fileInfo object
-                FileInfo fileInfo = new FileInfo(fullName);
-
-                // set the index
-                index = fileInfo.Name.LastIndexOf(".");
-
-                // if the index was found and not the first character
-                if (index > 0)
-                {
-                    // Set the return value
-                    fileNameWithoutExtension = fileInfo.Name.Substring(0, index);
-                }
-                else
-                {
-                    // Set the return value to the name (if it is possible for a filie to not have an extension?)
-                    fileNameWithoutExtension = fileInfo.Name;
-                }
-
-                // set the extension
-                extension = fileInfo.Extension;
+                // Remove the extension
+                fileNameWithoutExtension = fileInfo.Name.Replace(fileInfo.Extension, "");
             }
+            else
+            {
+                // There is not an extension
+                fileNameWithoutExtension = fileInfo.Name;
+            }
+
+            // set the extension
+            extension = fileInfo.Extension;
 
             // return value
             return fileNameWithoutExtension;
-        }
-        #endregion
-
-        #region GetFiles(string directoryPath, string filterExtension = "", bool removeExtension = false)
-        /// <summary>
-        /// This method returns a list of file names.
-        /// </summary>
-        /// <param name="directoryPath">The path to the Directory containing the files</param>
-        /// <param name="filterExtension">If an extension is passed in, only files matching this extension
-        /// will be returned.</param>
-        /// <param name="removeExtension">If true, the extension is removed</param>
-        /// <returns></returns>
-        public static List<string> GetFiles(string directoryPath, string filterExtension = "", bool removeExtension = false)
-        {
-            // initial value
-            List<string> files = new List<string>();
-
-            // local
-            string extension = "";
-
-            // If the filePath string exists
-            if ((TextHelper.Exists(directoryPath)) && (Directory.Exists(directoryPath)))
-            {
-                // get the fileNames
-                string[] fileNames = Directory.GetFiles(directoryPath);
-
-                // if the fileNames exist
-                if ((fileNames != null) && (fileNames.Length > 0))
-                {
-                    // if the value for removeExtension is true
-                    if (removeExtension)
-                    {
-                        // get a tempList
-                        List<string> tempNames = fileNames.ToList();
-
-                        // Iterate the collection of string objects
-                        foreach (string tempName in fileNames)
-                        {
-                            // get the name without the extension
-                            string name = GetFileNameWithoutExtensionEx(tempName, ref extension);
-
-                            // If the filterExtension string exists
-                            if (TextHelper.Exists(filterExtension))
-                            {
-                                // if the extension exists
-                                if (TextHelper.IsEqual(filterExtension, extension))
-                                {
-                                    // Add this file
-                                    files.Add(name);
-                                }
-                            }
-                            else
-                            {
-                                // Add this file
-                                files.Add(name);
-                            }
-                        }
-                    }
-                    // if the filterExtension exists
-                    else if (TextHelper.Exists(filterExtension))
-                    {
-                        // get a tempList
-                        List<string> tempNames = fileNames.ToList();
-
-                        // Iterate the collection of string objects
-                        foreach (string tempName in fileNames)
-                        {
-                            // The name is not needed here, just getting the extension
-                            GetFileNameWithoutExtensionEx(tempName, ref extension);
-
-                            // if the extension exists
-                            if (TextHelper.IsEqual(filterExtension, extension))
-                            {
-                                // Add this file
-                                files.Add(tempName);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // get a tempList
-                        List<string> tempNames = fileNames.ToList();
-
-                        // Iterate the collection of string objects
-                        foreach (string tempName in fileNames)
-                        {
-                            // Add this file
-                            files.Add(tempName);
-                        }
-                    }
-                }
-            }
-
-            // return value
-            return files;
         }
         #endregion
 
@@ -376,6 +350,37 @@ namespace DataJuggler.Core.UltimateHelper
 
             // return value
             return files;
+        }
+        #endregion
+
+        #region RemovePartialGuid(string fileNameWithPartialGuid)
+        /// <summary>
+        /// returns the Partial Guid
+        /// </summary>
+        /// <param name="fileNameWithPartialGuid">The file name with a partial guid such as Banana.853edcd1-216.jpg</param>
+        public string RemovePartialGuid(string fileNameWithPartialGuid)
+        {
+            // initial value
+            string fileName = "";
+
+            // If the fileNameWithPartialGuid string exists
+            if (TextHelper.Exists(fileNameWithPartialGuid))
+            {
+                // get the index of the first dot
+                int index = fileNameWithPartialGuid.IndexOf(".");
+
+                // get the root name before the first dot
+                string subString = fileNameWithPartialGuid.Substring(0, index);
+
+                // Create a fileInfo object
+                FileInfo fileInfo = new FileInfo(fileNameWithPartialGuid);
+
+                // Set the return value
+                fileName = subString + fileInfo.Extension;
+            }
+
+            // return value
+            return fileName;
         }
         #endregion
 
