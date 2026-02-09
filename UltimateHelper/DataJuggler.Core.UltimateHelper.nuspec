@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>1.9.4</version>
+    <version>1.9.7</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
@@ -12,8 +12,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
+		Version 1.9.7 - Added a default value for digits to 0 for RoundUp and RoundDown.
+		Version 1.9.5 - Copied some code from the .NET 10 version for RoundDown and RoundUp with a digits override. 
 		Version 1.9.4 - Copied some code from the .NET 10 version to make a special version of Excelerate.
-		Version 1.9.0 - EnvironmentVariableHelper was updated to have a parameter for User or Machine 
+		Version 1.9.0 - EnvironmentVariableHelper was updated to have a parameter for User or Machine
 		Version 1.7.0 - WordParser has been eliminated. Use TextHelper for all methods that WordParser useds to implement.
 		Version 1.6.0 - This project was updated to 4.8 .NET Framework
 		Version 1.5.0 - I am in the process of moving CryptographyHelper to its own package for the .Net Framework. I didn't like all the baggage the Konscious.Security and Argon libraries
@@ -21,7 +23,7 @@
 		Version 1.4.9 - I added a verifyRetries optional parameter to GeneratePasswordHash. It really should be manditory.
 		Version 1.4.8 - I updated CryptographyHelper to have try catches around everything.
 	</releaseNotes>
-    <copyright>Copyright 2019 Data Juggler Software Licensed For Free To Do Whatever You Want. No Lawyers Needed Ever.</copyright>
+    <copyright>Copyright 2026 Data Juggler Software Licensed For Free To Do Whatever You Want. No Lawyers Needed Ever.</copyright>
     <tags>C# Helper Classes Data Juggler DataJuggler NullHelper TextHelper EnumHelper ListHelper List Helper Dialog Helper MessageBoxHelper Message Box Helper</tags>
   </metadata>
 </package>
