@@ -4,9 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 
 #endregion
 
@@ -22,6 +23,157 @@ namespace DataJuggler.Core.UltimateHelper
         
         #region Methods
     
+            #region GetDateText(DateTime date)
+            /// <summary>
+            /// This method returns the Date Text
+            /// <param
+            /// </summary>
+            public static string GetDateText(DateTime date, bool addCommaAfterDay = true, bool addCommaBeforeYear = true)
+            {
+                // initial value
+                string dateText = "";
+
+                // local
+                StringBuilder sb = new StringBuilder();
+
+                // Add the day of week
+                sb.Append(date.DayOfWeek.ToString());
+
+                // if the value for addCommaAfterDay is true
+                if (addCommaAfterDay)
+                {
+                    // add a comma and a space
+                    sb.Append(", ");
+                }
+                else
+                {
+                    // add a space
+                    sb.Append(" ");
+                }
+
+                // string monthName = "";
+                DateTimeFormatInfo mfi = new System.Globalization.DateTimeFormatInfo();
+                    
+                // Set the monthName
+                string monthName = mfi.GetMonthName(date.Month);
+
+                // Append the monthName
+                sb.Append(monthName);
+
+                // add a space before the day
+                sb.Append(" ");
+
+                // Append the day
+                sb.Append(date.Day);
+
+                // if addCommaBeforeYear is true
+                if (addCommaBeforeYear)
+                {
+                     // add a comma and a space
+                    sb.Append(", ");
+                }
+                else
+                {
+                    // add a space
+                    sb.Append(" ");
+                }
+
+                // append the year
+                sb.Append(date.Year);
+
+                // set the return value
+                dateText = sb.ToString();
+                
+                // return value
+                return dateText;
+            }
+            #endregion
+    
+            #region GetFirstSaturday(int month = 0, int year = 0)
+            /// <summary>
+            /// This method returns the First Saturday of the month
+            /// </summary>
+            /// <param name="month">An optional parameter to specify the month to return the first Saturday.</param>
+            /// <param name="year">An optional parameter to specify the year to return the first Saturday. 
+            /// The month is required if this parameter is passed in.</param>
+            /// <returns></returns>
+            public static DateTime GetFirstSaturday(int month = 0, int year = 0)
+            {
+                // initial value
+                DateTime firstSaturday = DateTime.MinValue;
+                
+                // local
+                DateTime nextMonthFirstSaturday = DateTime.MinValue;
+                
+                // get the current time
+                DateTime now = DateTime.Now;
+                
+                // if a year was passed in
+                if ((year > 0) && (month == 0))
+                {
+                    // raise an error if a month was supplied but not a year
+                    throw new Exception("A month must be supplied if a year is given.");
+                }
+                else if (year == 0)
+                {
+                    // use this year
+                    year = now.Year;
+                }
+                
+                // if the month was passed in
+                if (month == 0)
+                {
+                    // set the month
+                    month = now.Month;
+                }
+                else
+                {
+                    // set the month to this month
+                    month = now.Month;
+                }
+                
+                // iterate up to 7 days
+                for (int x = 1; x < 8; x++)
+                {
+                    // find the first Saturday
+                    firstSaturday = new DateTime(year, month, x);
+                    
+                    // if this is a Saturday
+                    if (firstSaturday.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        // break out of the loop      
+                        break;
+                    }
+                }
+                
+                // if this month's first Saturday has already occurred.
+                if (now.Day > firstSaturday.Day)
+                {
+                    // get next month
+                    int nextMonth = firstSaturday.AddMonths(1).Month;
+                    int nextMonthsYear = firstSaturday.AddMonths(1).Year;
+                    
+                    for (int x = 1; x < 8; x++)
+                    {
+                        nextMonthFirstSaturday = new DateTime(nextMonthsYear, nextMonth, x);
+                        
+                        // if this is a Saturday
+                        if (nextMonthFirstSaturday.DayOfWeek == DayOfWeek.Saturday)
+                        {
+                            // set the return value
+                            firstSaturday = nextMonthFirstSaturday;
+                            
+                            // break out of the loop      
+                            break;
+                        }
+                    }
+                }
+                
+                // return value
+                return firstSaturday;
+            }
+            #endregion
+
             #region GetFileNameWithTimestamp(string filename)
             /// <summary>
             /// This method Get File Name With Timestamp

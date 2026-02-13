@@ -112,6 +112,61 @@ namespace DataJuggler.Core.UltimateHelper
         }
         #endregion
 
+        #region DoesFileNameContainPartialGuid(string fileName)
+        /// <summary>
+        /// method returns the File Name Contain Partial Guid
+        /// </summary>
+        public static bool DoesFileNameContainPartialGuid(string fileName)
+        {
+            // initial value
+            bool containsPartialGuid = false;
+
+            try
+            {
+                // if the fileName exists
+                if (TextHelper.Exists(fileName))
+                {
+                    // if the name contains a quote, this causes an error
+                    if (!fileName.Contains('\"'))
+                    {
+                        // Create a new instance of a 'FileInfo' object.
+                        FileInfo fileInfo = new FileInfo(fileName);
+
+                        // if the extension exists
+                        if ((TextHelper.Exists(fileInfo.Extension)) && (fileInfo.Extension == ".pdf"))
+                        {
+                            // remove the extension
+                            fileName = fileName.Replace(fileInfo.Extension, "");
+                        }
+
+                        // get a reverse string
+                        char[] charArray = fileName.Reverse().ToArray();
+                        string temp = new string(charArray);
+
+                        // if greater than 12 character name
+                        if (temp.Length > 12)
+                        {
+                            // this is most likely a partial guid created by TestOp
+                            if ((temp[3] == '-') && (temp[12] == '.'))
+                            {
+                                // set the return value
+                                containsPartialGuid = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                // for debugging only
+                DebugHelper.WriteDebugError("DoesFileNameContainPartialGuid", "FileHelper.cs", error);
+            }
+
+            // return value
+            return containsPartialGuid;
+        }
+        #endregion
+
         #region Exists(string filePath)
         /// <summary>
         /// method returns the
@@ -353,6 +408,37 @@ namespace DataJuggler.Core.UltimateHelper
         }
         #endregion
 
+        #region IsFileInUse(string path)
+        /// <summary>
+        /// method returns the File In Use
+        /// </summary>
+        public static bool IsFileInUse(string path)
+        {
+            // initial value
+            bool inUse = false;
+            
+            // If the file exists
+            if (File.Exists(path))
+            {
+                try
+                {
+                    using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                    {
+                        stream.Close();
+                    }
+                }
+                catch (IOException)
+                {
+                    // set the return value
+                    inUse = true;
+                }
+            }
+
+            // return value
+            return inUse;
+        }
+        #endregion
+        
         #region RemovePartialGuid(string fileNameWithPartialGuid)
         /// <summary>
         /// returns the Partial Guid
@@ -377,6 +463,67 @@ namespace DataJuggler.Core.UltimateHelper
 
                 // Set the return value
                 fileName = subString + fileInfo.Extension;
+            }
+
+            // return value
+            return fileName;
+        }
+        #endregion
+
+        #region RemovePartialGuid(string fileName, bool fileNameOnly)
+        /// <summary>
+        /// returns the Partial Guid
+        /// </summary>
+        public static string RemovePartialGuid(string fileName, bool fileNameOnly)
+        {
+            // initial value
+            if (TextHelper.Exists(fileName))
+            {
+                // Create a new instance of a 'FileInfo' object.
+                FileInfo fileInfo = new FileInfo(fileName);
+
+                // set the index
+                int index = fileInfo.Name.IndexOf(".");
+
+                // if the index was found
+                if (index > 0)
+                {
+                    // get the temp string
+                    string temp = fileInfo.Name.Substring(0, index);
+
+                    // if fileNameOnly
+                    if (fileNameOnly)
+                    {
+                        // add the extension back
+                        fileName = temp + fileInfo.Extension;
+                    }
+                    else
+                    {
+                        // Get the new fileName
+                        fileName = Path.Combine(fileInfo.DirectoryName, temp) + fileInfo.Extension;
+                    }
+                }
+            }
+
+            // return value
+            return fileName;
+        }
+        #endregion
+
+        #region ReplacePartialGuid(string fileName, bool addExtension = true, bool fileNameOnly)
+        /// <summary>
+        /// returns the Partial Guid
+        /// </summary>
+        public static string ReplacePartialGuid(string fileName, int numberChars, bool addExtension = true, bool fileNameOnly = false)
+        {
+            // initial value
+            if (FileHelper.DoesFileNameContainPartialGuid(fileName))
+            {
+                // remove the partial guid
+                fileName = RemovePartialGuid(fileName, fileNameOnly);
+
+                // Create the fileName with a partial guid
+                fileName = CreateFileNameWithPartialGuid(fileName, numberChars, addExtension, fileNameOnly);
             }
 
             // return value

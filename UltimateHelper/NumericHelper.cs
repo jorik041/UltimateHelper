@@ -3,6 +3,7 @@
 #region using statements
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -120,6 +121,183 @@ namespace DataJuggler.Core.UltimateHelper
 
                 // return value
                 return primeNumber;
+            }
+            #endregion
+
+             #region IsInRange(int number, int min, int max)
+            /// <summary>
+            /// This method is used to check a number is greater than or equal to the min
+            /// and less than or equal to the max.
+            /// </summary>
+            /// <param name="number"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInRange(int number, int min, int max)
+            {
+                // set the return value
+                bool isInRange = ((number >= min) && (number <= max));
+
+                // return value
+                return isInRange;
+            }
+            #endregion
+
+            #region IsInRange(double number, double min, double max)
+            /// <summary>
+            /// This method is used to check a number is greater than or equal to the min
+            /// and less than or equal to the max.
+            /// </summary>
+            /// <param name="number"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInRange(double number, double min, double max)
+            {
+                // set the return value
+                bool isInRange = ((number >= min) && (number <= max));
+
+                // return value
+                return isInRange;
+            }
+            #endregion
+
+            #region IsInRange(Decimal number, Decimal min, Decimal max)
+            /// <summary>
+            /// This method is used to check a number is greater than or equal to the min
+            /// and less than or equal to the max.
+            /// </summary>
+            /// <param name="number"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInRange(Decimal number, Decimal min, Decimal max)
+            {
+                // set the return value
+                bool isInRange = ((number >= min) && (number <= max));
+
+                // return value
+                return isInRange;
+            }
+            #endregion
+
+            #region IsInRange(List<int> numbers, int min, int max)
+            /// <summary>
+            /// This method is used to check if a List of numbers is greater than or equal to the min
+            /// and less than or equal to the max.
+            /// </summary>
+            /// <param name="number"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInRange(List<int> numbers, int min, int max)
+            {
+                // set the return value
+                bool isInRange = false;
+                
+                // If the numbers collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(numbers))
+                {
+                    // set to true now
+                    isInRange = true;
+
+                    // Iterate the collection of int objects
+                    foreach (int number in numbers)
+                    {
+                        // if NOT in range
+                        if (!IsInRange(number, min, max))
+                        {
+                            // set to false
+                            isInRange = false;
+
+                            // break out of loop
+                            break;
+                        }
+                    }
+                }
+
+                // return value
+                return isInRange;
+            }
+            #endregion
+
+            #region IsInRange(List<double> numbers, double min, double max)
+            /// <summary>
+            /// This method is used to check if a List of numbers is greater than or equal to the min
+            /// and less than or equal to the max.
+            /// </summary>
+            /// <param name="number"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInRange(List<double> numbers, double min, double max)
+            {
+                // set the return value
+                bool isInRange = false;
+                
+                // If the numbers collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(numbers))
+                {
+                    // set to true now
+                    isInRange = true;
+
+                    // Iterate the collection of double objects
+                    foreach (double number in numbers)
+                    {
+                        // if NOT in range
+                        if (!IsInRange(number, min, max))
+                        {
+                            // set to false
+                            isInRange = false;
+
+                            // break out of loop
+                            break;
+                        }
+                    }
+                }
+
+                // return value
+                return isInRange;
+            }
+            #endregion
+
+            #region IsInRange(List<Decimal> numbers, Decimal min, Decimal max)
+            /// <summary>
+            /// This method is used to check if a List of numbers is greater than or equal to the min
+            /// and less than or equal to the max.
+            /// </summary>
+            /// <param name="number"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInRange(List<Decimal> numbers, Decimal min, Decimal max)
+            {
+                // set the return value
+                bool isInRange = false;
+                
+                // If the numbers collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(numbers))
+                {
+                    // set to true now
+                    isInRange = true;
+
+                    // Iterate the collection of Decimal objects
+                    foreach (Decimal number in numbers)
+                    {
+                        // if NOT in range
+                        if (!IsInRange(number, min, max))
+                        {
+                            // set to false
+                            isInRange = false;
+
+                            // break out of loop
+                            break;
+                        }
+                    }
+                }
+
+                // return value
+                return isInRange;
             }
             #endregion
 
@@ -422,22 +600,22 @@ namespace DataJuggler.Core.UltimateHelper
             }
             #endregion
 
-            #region RoundDown(double number, int digits)
+            #region RoundDown(double number, int digits, int digits = 0)
             /// <summary>
             /// method returns the Down
             /// </summary>
-            public static double RoundDown(double number, int digits)
+            public static double RoundDown(double number, int digits = 0)
             {
                 double factor = Math.Pow(10, digits);
                 return Math.Floor(number * factor) / factor;
             }
             #endregion
             
-            #region RoundDown(decimal number, int digits)
+            #region RoundDown(decimal number, int digits =  0)
             /// <summary>
             /// method returns the Down
             /// </summary>
-            public static decimal RoundDown(decimal number, int digits)
+            public static decimal RoundDown(decimal number, int digits = 0)
             {
                 decimal factor = (decimal) Math.Pow(10, digits);
                 return Math.Floor(number * factor) / factor;
